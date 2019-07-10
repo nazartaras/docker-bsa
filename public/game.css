@@ -1,0 +1,17 @@
+.root{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.text{
+    display: flex;
+}
+.result-field{
+    margin-bottom:50px; 
+}
+.commentator{
+    position: absolute;
+    top:20px;
+}

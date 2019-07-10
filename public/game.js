@@ -6,6 +6,8 @@ window.onload = () => {
     const textField = document.querySelector('#to-enter');
     const waiting_timer = document.querySelector('#waiting-timer');
     const place_for_comments = document.querySelector('#commentator-place');
+    let minutesHtml = document.getElementById('minutes');
+    let secondsHtml = document.getElementById('seconds');
     let progress = 0;
     let currText = 0;
     let currMapLength = 0;
@@ -36,10 +38,6 @@ window.onload = () => {
                 clearTimeout();
                 timerTime = body.currMap.time;
                 maxTimer = timerTime;
-                waiting_timer.style.display = 'block';
-                timerId = setInterval(() => {
-                    timer(1)
-                }, 1000);
             })
         })
 
@@ -61,7 +59,7 @@ window.onload = () => {
         entered.innerHTML = enteredText;
         progress += 1;
         document.getElementById(token).children[1].value = progress;
-        socket.emit('progress-change', { currProgress: progress, token: token, maxProgress: currMapLength, timeWasted: maxTimer-timerTime });
+        socket.emit('progress-change', { currProgress: progress, token: token, maxProgress: currMapLength, timeWasted: maxTimer - timerTime });
         if (progress == textToEnter.length + enteredText.length) {
             socket.emit('player-finished', { token: token });
         }
@@ -75,10 +73,12 @@ window.onload = () => {
         }
 
     })
-    socket.on('someone-finished-race', ev => {
+    socket.on('change-timer-text', payload=>{
+        document.getElementById('timer-text').innerHTML = payload.text;
     })
 
-    socket.on('race-finished', payload => {
+
+    socket.on('finish-race', payload => {
         hideAll();
     })
     socket.on('someone-new-connected', payload => {
@@ -95,21 +95,21 @@ window.onload = () => {
         newProgWrp.appendChild(newProgBar);
         resultDiv.appendChild(newProgWrp);
     })
-    socket.on('incorrect', ev => { })
     socket.on('transfer', ev => {
         clearInterval(timerId);
         socket.emit('to-room-race', { token: token });
     })
-    socket.on('start-timer', payload => {
-        waiting_timer.style.display = 'block';
-        timerTime = payload.time;
-        timerId = setInterval(() => {
-            timer(payload.status)
-        }, 1000);
-    })
-    socket.on('clear-interval', payload => {
-        clearInterval(timerId);
-        clearInterval(commentResultAnnounceIntervalId);
+    socket.on('update-timer', payload => {
+        let seconds = payload.newTime % 60;
+        let minutes = (payload.newTime - seconds) / 60;
+        if (minutes < 1) {
+            minutesHtml.style.display = 'none';
+        }
+        else {
+            minutesHtml.style.display = 'inline-block';
+            minutesHtml.innerHTML = minutes;
+        }
+        secondsHtml.innerHTML = seconds;
     })
     function hideAll() {
         entered.innerHTML = '';
@@ -121,51 +121,12 @@ window.onload = () => {
     function restoreAll() {
         entered.style.display = 'inline-block';
         textField.style.display = 'inline-block';
-        waiting_timer.style.display = 'none';
         progress = 0;
+        deleteProgressBars();
+    }
+    function deleteProgressBars() {
         while (resultDiv.firstChild) {
             resultDiv.removeChild(resultDiv.firstChild);
         }
-    }
-
-    function timer(timerType) {
-        if (timerType === 1 || timerType == 3)
-            document.getElementById('timer-text').innerHTML = 'Time to the end of current race ::';
-        if (timerType === 2)
-            document.getElementById('timer-text').innerHTML = 'Time to the next ::';
-        let minutesHtml = document.getElementById('minutes');
-        let secondsHtml = document.getElementById('seconds');
-        let seconds = timerTime % 60;
-        let minutes = (timerTime - seconds) / 60;
-        
-        if (minutes < 1) {
-            minutesHtml.style.display = 'none';
-        }
-        else {
-            minutesHtml.style.display = 'inline-block';
-            minutesHtml.innerHTML = minutes;
-        }
-        secondsHtml.innerHTML = seconds;
-        if(timerType == 1 && timerTime==maxTimer){
-            commentResultAnnounceIntervalId = setInterval(()=>{
-            socket.emit('announce-current-results')},30000);
-        }
-        timerTime -= 1;
-        if (timerType == 1 && timerTime == maxTimer - 5) {
-            socket.emit('present-racers');
-        }
-        
-        if (timerTime === -1 && timerType == 1) {
-            clearInterval(timerId);
-            clearInterval(commentResultAnnounceIntervalId);
-            waiting_timer.style.display = 'none';
-            socket.emit('player-finished', { token: token });
-        }
-        if (timerTime === -1 && timerType == 2) {
-            clearInterval(timerId);
-            waiting_timer.style.display = 'none';
-            socket.emit('start-next', { token: token });
-        }
-
     }
 }

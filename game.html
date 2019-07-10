@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <title>Keyraces</title>
-      
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
-      <script src="game.js"></script>
-    </head>
-    <body>
-      <div id='commentator-place'></div>
-    <div id="results"></div>
-    <span id="entered" style="background-color: red"></span>
-    <span id="to-enter" style="background-color: green"></span>
-    <div id="waiting-timer" style="display: none"> 
-        <span id="timer-text"></span> 
-        <span id="minutes" type="text" style="width: 10px; 
+
+<head>
+  <title>Keyraces</title>
+  <link rel="stylesheet" type="text/css" href="game.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+  <script src="game.js"></script>
+</head>
+
+<body>
+  <div class="root">
+    <div id='commentator-place' class="commentator"></div>
+    <div id="results" class="result-field"></div>
+    <div class="text">
+      <span id="entered" style="background-color: red"></span>
+      <span id="to-enter" style="background-color: green"></span>
+    </div>
+    <div id="waiting-timer">
+      <span id="timer-text"></span>
+      <span id="minutes" type="text" style="width: 10px; 
              border: none; font-size: 16px;  
-            font-weight: bold; color: black;"></span><font size="5"> : </font> 
-        <span id="seconds" type="text" style="width: 20px; 
+            font-weight: bold; color: black;"></span>
+      <font size="5"> : </font>
+      <span id="seconds" type="text" style="width: 20px; 
                         border: none; font-size: 16px; 
-                        font-weight: bold; color: black;"></span> 
-    </div> 
-    </body>
+                        font-weight: bold; color: black;"></span>
+    </div>
+  </div>
+</body>
+
 </html>
