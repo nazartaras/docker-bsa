@@ -1,5 +1,5 @@
 let cars = ['ferrari', 'mercedes', 'porshe', 'lamborgini', 'bentley', 'mclaren']
-let randomComments = ['А спонсором сьогоднішньої гонки є Велика Кишеня. Велика кишеня, завжди свіжі продукти до вашого столу.', 'Найкращим гравцем в історії існування клавогонок є nagibator228, на його рахунку быльше 10000 перемог', 'Якщо ви помітили якісь порушення правил під час гонки, звертайтеся з скаргам в Асоціацію клавогонок України'];
+let randomComments = ['А спонсором сьогоднішньої гонки є Велика Кишеня. Велика кишеня, завжди свіжі продукти до вашого столу.', 'Найкращим гравцем в історії існування клавогонок є nagibator228, на його рахунку більше 10000 перемог', 'Якщо ви помітили якісь порушення правил під час гонки, звертайтеся з скаргам в Асоціацію клавогонок України', 'Клавогонки один ыз найдавныших видыв спорту, його заснували ще давны римляни'];
 let Comment = {};
 
 let proxy = new Proxy(Comment, {
@@ -64,11 +64,11 @@ function getRacersAnnounceCurrResultsString(arrayRacers){
 function getAnnounceResultsString(arrayRacers){
     let str = 'Результати гонки, яка щойно закінчилась ';
     if(arrayRacers.length==1){
-        str=str+'на першому місці '+arrayRacers[0].login+' з результатом '+arrayRacers[0].progress+' символів за '+arrayRacers[0].timeWastedForMap+' секунди.';
+        str=str+'на першому місці '+arrayRacers[0].login+' з результатом '+arrayRacers[0].progress+' символів за '+arrayRacers[0].timeWastedForMap+' секунд.';
     }else if(arrayRacers.length==2){
-        str=str+'на першому місці '+arrayRacers[1].login+' з результатом '+arrayRacers[1].progress+' символів за '+arrayRacers[1].timeWastedForMap+' секунди, за ним на другому місці '+arrayRacers[0].login+' з результатом '+arrayRacers[0].progress+' символів за '+arrayRacers[0].timeWastedForMap+' секунди.';
+        str=str+'на першому місці '+arrayRacers[1].login+' з результатом '+arrayRacers[1].progress+' символів за '+arrayRacers[1].timeWastedForMap+' секунд, за ним на другому місці '+arrayRacers[0].login+' з результатом '+arrayRacers[0].progress+' символів за '+arrayRacers[0].timeWastedForMap+' секунд.';
     }else{
-        str=str+'на першому місці '+arrayRacers[2].login+' з результатом '+arrayRacers[2].progress+' символів за '+arrayRacers[2].timeWastedForMap+' секунди, за ним на другому місці з результатом '+arrayRacers[1].progress+' символів за '+arrayRacers[1].timeWastedForMap+' секунди'+arrayRacers[1].login+', замикає трійку лідерів '+arrayRacers[0].login+' з результатом '+arrayRacers[0].progress+' символів за '+arrayRacers[0].timeWastedForMap+' секунди.';
+        str=str+'на першому місці '+arrayRacers[2].login+' з результатом '+arrayRacers[2].progress+' символів за '+arrayRacers[2].timeWastedForMap+' секунд, за ним на другому місці з результатом '+arrayRacers[1].progress+' символів за '+arrayRacers[1].timeWastedForMap+' секунд'+arrayRacers[1].login+', замикає трійку лідерів '+arrayRacers[0].login+' з результатом '+arrayRacers[0].progress+' символів за '+arrayRacers[0].timeWastedForMap+' секунд.';
     }
     return str;
 }

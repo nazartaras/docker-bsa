@@ -11,14 +11,8 @@ window.onload = () => {
     let progress = 0;
     let currText = 0;
     let currMapLength = 0;
-    let timerTime;
-    let timerId;
-    let maxTimer;
-    let commentResultAnnounceIntervalId;
     const token = localStorage.getItem('jwt');
-    window.addEventListener('keypress', ev => {
-        socket.emit('keypressed', { keycode: ev.keyCode, charNum: progress, currTextId: currText, token: token });
-    })
+   
 
     socket.on('start', ev => {
         restoreAll();
@@ -35,12 +29,15 @@ window.onload = () => {
                 textField.innerHTML = body.currMap.map;
                 currText = body.textId;
                 currMapLength = body.currMap.map.length;
-                clearTimeout();
-                timerTime = body.currMap.time;
-                maxTimer = timerTime;
             })
         })
 
+    })
+    socket.on('add-event-listener',payload=>{
+        window.addEventListener('keypress', listener)
+    })
+    socket.on('remove-event-listener', payload=>{
+        window.removeEventListener('keypress', listener)
     })
     socket.on('wait', ev => {
         textField.style.display = "none";
@@ -59,7 +56,7 @@ window.onload = () => {
         entered.innerHTML = enteredText;
         progress += 1;
         document.getElementById(token).children[1].value = progress;
-        socket.emit('progress-change', { currProgress: progress, token: token, maxProgress: currMapLength, timeWasted: maxTimer - timerTime });
+        socket.emit('progress-change', { currProgress: progress, token: token, maxProgress: currMapLength});
         if (progress == textToEnter.length + enteredText.length) {
             socket.emit('player-finished', { token: token });
         }
@@ -96,7 +93,6 @@ window.onload = () => {
         resultDiv.appendChild(newProgWrp);
     })
     socket.on('transfer', ev => {
-        clearInterval(timerId);
         socket.emit('to-room-race', { token: token });
     })
     socket.on('update-timer', payload => {
@@ -116,6 +112,7 @@ window.onload = () => {
         textField.innerHTML = '';
         entered.style.display = 'none';
         textField.style.display = 'none';
+        
 
     }
     function restoreAll() {
@@ -128,5 +125,8 @@ window.onload = () => {
         while (resultDiv.firstChild) {
             resultDiv.removeChild(resultDiv.firstChild);
         }
+    }
+    function listener(ev){
+        socket.emit('keypressed', { keycode: ev.keyCode, charNum: progress, currTextId: currText, token: token });
     }
 }

@@ -71,6 +71,7 @@ io.on('connection', function (socket) {
         timeEnd = Date.parse(currTime) + (textTime * 1000);
         socket.join('race');
         socket.emit('start');
+        socket.emit('add-event-listener');
         startRaceTimer(textTime);
     } else if (raceTimerId != 'no-timer') {
         socket.join('waiting');
@@ -96,6 +97,7 @@ io.on('connection', function (socket) {
                 playersInfo = [];
                 socket.broadcast.to('race').emit('finish-race');
                 socket.emit('finish-race');
+                io.sockets.in('race').emit('remove-event-listener');
                 mapId = getRandomInt(3);
                 timeEnd = Date.parse(new Date);
                 raceTimer.stopTimer();
@@ -225,6 +227,7 @@ function startRaceTimer(textTime){
              });
             io.sockets.in('race').emit('commentator-change', {comment: commentFactory.createComment('announce-results', playersInfo)});
             io.sockets.in('race').emit('finish-race', {newTime: currRaceTimerTime});
+            io.sockets.in('race').emit('remove-event-listener');
             clearInterval(randomCommentIntId);
             playersInfo=[];
             playersCount = 0;
@@ -250,6 +253,7 @@ function startBreakTimer(breakTime){
             const textTime = maps.find(map => map.id === mapId).time;
             timeEnd = Date.parse(timeStart)+ 1000 + (textTime.time * 1000);
             io.sockets.in('race').emit('start');
+            io.sockets.in('race').emit('add-event-listener');
             waitTimerId='no-timer';
             startRaceTimer(textTime);
             breakTimer.stopTimer();
